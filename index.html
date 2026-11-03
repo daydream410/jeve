@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Untuk Jeje, from Cico — dari map hutan Roblox sampai call Discord tiap malam." />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="theme-color" content="#FFE8EF" />
+  <title>Untuk Jeje ♡</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            blossom: {
+              50: '#FFF7F9',
+              100: '#FFE8EF',
+              200: '#FFD0DD',
+              300: '#F5A3B8',
+              400: '#E87898',
+              500: '#D45A7A',
+              600: '#B83D62',
+              700: '#8F2E4C',
+            },
+            pearl: '#FFFBFB',
+            ink: '#3D2430',
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['Quicksand', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="font-sans text-ink bg-pearl antialiased overflow-x-hidden">
+  <div class="bg-atmosphere" aria-hidden="true"></div>
+  <div class="floating-petals" aria-hidden="true"></div>
+  <div class="icon-field" aria-hidden="true">
+    <img class="float-icon float-icon--a" src="assets/images/icons8-cinnamoroll-50.png" alt="" />
+    <img class="float-icon float-icon--b" src="assets/images/icons8-hello-kitty-50.png" alt="" />
+    <img class="float-icon float-icon--c" src="assets/images/icons8-my-melody-50.png" alt="" />
+    <img class="float-icon float-icon--d" src="assets/images/icons8-kuromi-50.png" alt="" />
+    <img class="float-icon float-icon--e" src="assets/images/icons8-keroppi-50.png" alt="" />
+    <img class="float-icon float-icon--f" src="assets/images/icons8-cinnamoroll-50.png" alt="" />
+    <img class="float-icon float-icon--g" src="assets/images/icons8-hello-kitty-50.png" alt="" />
+    <img class="float-icon float-icon--h" src="assets/images/icons8-my-melody-50.png" alt="" />
+    <img class="float-icon float-icon--i" src="assets/images/icons8-kuromi-50.png" alt="" />
+    <img class="float-icon float-icon--j" src="assets/images/icons8-keroppi-50.png" alt="" />
+  </div>
+
+  <div id="yt-host" class="yt-autoplay-host" aria-hidden="true">
+    <iframe
+      id="yt-iframe"
+      title="Background music"
+      src=""
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+      referrerpolicy="strict-origin-when-cross-origin"
+    ></iframe>
+  </div>
+
+  <header class="top-bar">
+    <p class="brand-mark" aria-label="Cico and Jeje">Cico <span aria-hidden="true">×</span> Jeje</p>
+    <div class="music-dock">
+      <button
+        id="music-toggle"
+        type="button"
+        class="music-btn"
+        aria-label="Putar / jeda musik"
+        aria-expanded="false"
+        title="Musik"
+      >
+        <span class="music-icon" aria-hidden="true">♪</span>
+      </button>
+      <div id="music-panel" class="music-panel" hidden>
+        <p class="music-panel-label">Soundtrack</p>
+        <p id="music-hint" class="music-hint" hidden>
+          Kalau audio tidak jalan, buka lewat local server atau tap link di bawah.
+        </p>
+        <a
+          class="music-panel-link"
+          href="https://www.youtube.com/watch?v=ueABCC8eF6o"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open in YouTube
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" class="stage">
+
+    <!-- SCENE 1: Intro -->
+    <section id="scene-intro" class="scene scene-active" data-scene="intro">
+      <div class="scene-inner">
+        <p class="eyebrow animate-in" style="--delay: 0.15s">Hei Jeje…</p>
+        <h1 class="headline animate-in" style="--delay: 0.4s">
+          Aku mau<br />
+          <em>cerita dikit</em>
+        </h1>
+        <p class="lede animate-in" style="--delay: 0.7s">
+          Soal kita. Soal malam-malam yang pelan-pelan bikin aku sayang.
+          Baca sampai habis, ya?
+        </p>
+        <div class="cta-row animate-in" style="--delay: 1.05s">
+          <button type="button" class="btn-primary" data-next="story">
+            Oke, aku dengerin
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 2: Story -->
+    <section id="scene-story" class="scene" data-scene="story" hidden>
+      <div class="scene-inner">
+        <p class="eyebrow">awal kisah kita</p>
+        <h2 class="headline headline--md">Dari map hutan,<br /><em>ke hatiku</em></h2>
+        <div class="story-stack" id="story-stack">
+          <p class="story-line">Kita kenal di Roblox, di map hutan yang random banget. Aku nggak nyangka dari situ bakal nemu kamu.</p>
+          <p class="story-line">Awalnya cuma ngobrol biasa… tapi jokes-mu nyambung terus. Aku jadi nyaman, kayak udah lama kenal.</p>
+          <p class="story-line">Kamu seru dan baik. Campuran yang bikin aku bingung sendiri — kenapa senyum-senyum sendiri tiap mikirin kamu.</p>
+          <p class="story-line">Tiap malam call Discord jadi hal yang paling kutunggu. Dengar kamu ngomong dan ketawa aja… udah cukup bikin aku jatuh hati.</p>
+          <p class="story-line story-line--accent">Pelan-pelan, aku sadar: ini bukan sekadar temen main. Ini kamu.</p>
+        </div>
+        <div class="cta-row">
+          <button type="button" class="btn-primary" data-next="map" disabled id="story-continue">
+            Lanjut yuk
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 3: Distance Map -->
+    <section id="scene-map" class="scene" data-scene="map" hidden>
+      <div class="scene-inner scene-inner--wide">
+        <p class="eyebrow">meski beda kota</p>
+        <h2 class="headline headline--md">Jauh di peta,<br /><em>deket di hati</em></h2>
+        <p class="city-pair">
+          <span id="city-a-label">Surabaya</span>
+          <span class="city-heart" aria-hidden="true">♡</span>
+          <span id="city-b-label">Purworejo</span>
+        </p>
+
+        <div class="distance-map" role="img" aria-label="Peta jarak romantis Surabaya ke Purworejo">
+          <div class="map-stage">
+            <svg id="map-svg" viewBox="0 0 400 220" class="map-svg" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="pathGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#F5A3B8" />
+                  <stop offset="50%" stop-color="#E87898" />
+                  <stop offset="100%" stop-color="#B83D62" />
+                </linearGradient>
+                <linearGradient id="pathGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#FFD0DD" stop-opacity="0.9" />
+                  <stop offset="100%" stop-color="#E87898" stop-opacity="0.55" />
+                </linearGradient>
+                <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="3.5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <ellipse cx="200" cy="168" rx="150" ry="18" fill="rgba(232,120,152,0.08)" />
+              <circle class="map-dot" cx="95" cy="70" r="2.2" fill="#F5A3B8" opacity="0.35" />
+              <circle class="map-dot" cx="180" cy="48" r="1.8" fill="#E87898" opacity="0.3" />
+              <circle class="map-dot" cx="260" cy="62" r="2.4" fill="#F5A3B8" opacity="0.28" />
+              <circle class="map-dot" cx="310" cy="95" r="1.6" fill="#D45A7A" opacity="0.25" />
+
+              <path
+                id="heart-path-glow"
+                d="M 56 140 C 118 42, 176 42, 200 112 C 224 42, 282 42, 344 140"
+                fill="none"
+                stroke="url(#pathGlow)"
+                stroke-width="7"
+                stroke-linecap="round"
+                class="heart-line-glow"
+                opacity="0.55"
+              />
+
+              <path
+                id="heart-path"
+                d="M 56 140 C 118 42, 176 42, 200 112 C 224 42, 282 42, 344 140"
+                fill="none"
+                stroke="url(#pathGrad)"
+                stroke-width="2.8"
+                stroke-linecap="round"
+                class="heart-line"
+                filter="url(#softGlow)"
+              />
+
+              <g class="city-pin city-pin--a" transform="translate(56, 140)">
+                <circle class="pin-pulse" r="18" fill="#FFD0DD" opacity="0" />
+                <circle r="12" fill="#FFF7F9" stroke="#E87898" stroke-width="2.2" />
+                <circle r="5" fill="#B83D62" />
+              </g>
+              <text class="pin-label" x="56" y="168" text-anchor="middle">Surabaya</text>
+
+              <g class="city-pin city-pin--b" transform="translate(344, 140)">
+                <circle class="pin-pulse" r="18" fill="#FFD0DD" opacity="0" />
+                <circle r="12" fill="#FFF7F9" stroke="#E87898" stroke-width="2.2" />
+                <circle r="5" fill="#B83D62" />
+              </g>
+              <text class="pin-label" x="344" y="168" text-anchor="middle">Purworejo</text>
+
+              <g id="traveling-heart" class="traveling-heart" opacity="0">
+                <path
+                  d="M0,-7 C-5,-12 -12,-8 -12,-2 C-12,4 0,12 0,12 C0,12 12,4 12,-2 C12,-8 5,-12 0,-7 Z"
+                  fill="#D45A7A"
+                  class="heart-shape"
+                />
+              </g>
+              <g class="trail-heart trail-heart--1" opacity="0">
+                <path d="M0,-5 C-3.5,-8.5 -8,-5.5 -8,-1.5 C-8,2.5 0,8 0,8 C0,8 8,2.5 8,-1.5 C8,-5.5 3.5,-8.5 0,-5 Z" fill="#E87898" />
+              </g>
+              <g class="trail-heart trail-heart--2" opacity="0">
+                <path d="M0,-4 C-3,-7 -7,-4.5 -7,-1 C-7,2 0,7 0,7 C0,7 7,2 7,-1 C7,-4.5 3,-7 0,-4 Z" fill="#F5A3B8" />
+              </g>
+              <g class="trail-heart trail-heart--3" opacity="0">
+                <path d="M0,-3.5 C-2.5,-6 -6,-4 -6,-1 C-6,1.5 0,6 0,6 C0,6 6,1.5 6,-1 C6,-4 2.5,-6 0,-3.5 Z" fill="#FFD0DD" />
+              </g>
+            </svg>
+
+            <div class="map-float-hearts" aria-hidden="true">
+              <span class="map-pop-heart" style="--i:0">♥</span>
+              <span class="map-pop-heart" style="--i:1">♥</span>
+              <span class="map-pop-heart" style="--i:2">♥</span>
+              <span class="map-pop-heart" style="--i:3">♡</span>
+              <span class="map-pop-heart" style="--i:4">♥</span>
+            </div>
+          </div>
+
+          <div class="avatar-row">
+            <div class="avatar-block">
+              <div class="avatar-frame">
+                <img src="assets/avatars/you.png" alt="Avatar Cico" class="avatar-img" onerror="this.classList.add('avatar-fallback')" />
+                <span class="avatar-placeholder">Cico</span>
+              </div>
+              <p class="avatar-name" id="name-you">Cico</p>
+              <p class="avatar-city">Surabaya</p>
+            </div>
+            <p class="map-link-label" id="map-link-label">connecting…</p>
+            <div class="avatar-block">
+              <div class="avatar-frame">
+                <img src="assets/avatars/partner.png" alt="Avatar Jeje" class="avatar-img" onerror="this.classList.add('avatar-fallback')" />
+                <span class="avatar-placeholder">Jeje</span>
+              </div>
+              <p class="avatar-name" id="name-partner">Jeje</p>
+              <p class="avatar-city">Purworejo</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="caption">Kota kita beda, tapi tiap malam suaramu tetap nyampe ke aku.</p>
+        <div class="cta-row">
+          <button type="button" class="btn-primary" data-next="game">
+            Main game dulu yuk~
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE: Mini games -->
+    <section id="scene-game" class="scene" data-scene="game" hidden>
+      <div class="scene-inner scene-inner--wide">
+        <p class="eyebrow" id="game-eyebrow">mini games</p>
+        <h2 class="headline headline--md" id="game-title">Sebelum yang serius…</h2>
+        <p class="lede lede--tight" id="game-lede">Warm-up dulu biar jantungnya siap.</p>
+
+        <!-- Game 1: Quiz -->
+        <div id="game-quiz" class="game-panel">
+          <div class="quiz-card">
+            <p class="quiz-progress" id="quiz-progress">1 / 2</p>
+            <p class="quiz-question" id="quiz-question">Kita kenal pertama kali di mana?</p>
+            <div class="quiz-options" id="quiz-options"></div>
+            <p class="quiz-feedback" id="quiz-feedback" hidden></p>
+          </div>
+        </div>
+
+        <!-- Game 2: Catch hearts -->
+        <div id="game-catch" class="game-panel" hidden>
+          <div class="catch-hud">
+            <p class="catch-score">♥ <span id="catch-count">0</span> / 8</p>
+            <p class="catch-hint">Tap hati yang jatuh!</p>
+          </div>
+          <div class="catch-arena" id="catch-arena" aria-label="Area tangkap hati"></div>
+        </div>
+
+        <!-- Game 3: Love dial -->
+        <div id="game-dial" class="game-panel" hidden>
+          <div class="dial-card">
+            <p class="dial-label">Geser seberapa nyaman kamu sama aku</p>
+            <input
+              id="love-dial"
+              class="love-dial"
+              type="range"
+              min="0"
+              max="100"
+              value="70"
+              aria-label="Seberapa nyaman"
+            />
+            <p class="dial-value"><span id="dial-number">70</span>%</p>
+            <p class="dial-note" id="dial-note">Hmm… masih bisa lebih jujur~</p>
+            <button type="button" class="btn-primary" id="dial-submit" disabled>
+              Kunci jawaban
+            </button>
+          </div>
+        </div>
+
+        <!-- Bridge to ask -->
+        <div id="game-done" class="game-panel" hidden>
+          <div class="game-done-card">
+            <p class="game-done-emoji" aria-hidden="true">♡</p>
+            <p class="lede">Oke, warm-up selesai. Sekarang yang beneran…</p>
+            <div class="cta-row">
+              <button type="button" class="btn-primary" data-next="ask">
+                Aku siap
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE: Ask -->
+    <section id="scene-ask" class="scene" data-scene="ask" hidden>
+      <div class="scene-inner">
+        <p class="eyebrow">yang paling penting</p>
+        <h2 id="ask-question" class="headline headline--ask">
+          Jeje, mau jadi pacarku?
+        </h2>
+        <p class="lede lede--tight">
+          Dari hutan Roblox sampai call Discord tiap malam…
+          sekarang aku mau yang lebih dari itu. (Tombol <strong>Nope</strong>-nya nakal dikit, hehe.)
+        </p>
+        <div class="ask-playground" id="ask-playground">
+          <button type="button" id="btn-yes" class="btn-yes">Mau! ♡</button>
+          <button type="button" id="btn-no" class="btn-no">Nope</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 5: Celebrate -->
+    <section id="scene-celebrate" class="scene" data-scene="celebrate" hidden>
+      <div class="scene-inner">
+        <p class="eyebrow eyebrow--celebrate">yeayyyy</p>
+        <h2 id="celebrate-title" class="headline">Makasih, Jeje.</h2>
+        <p id="celebrate-message" class="lede">
+          Aku bahagia banget. Dari map hutan, jokes yang nyambung, sampai tawa kamu di Discord —
+          semuanya bikin aku makin yakin. Call malamnya… jangan berhenti, ya?
+        </p>
+        <div class="couple-row">
+          <div class="avatar-frame avatar-frame--lg">
+            <img src="assets/avatars/you.png" alt="" class="avatar-img" onerror="this.classList.add('avatar-fallback')" />
+            <span class="avatar-placeholder">Cico</span>
+          </div>
+          <span class="couple-heart" aria-hidden="true">♥</span>
+          <div class="avatar-frame avatar-frame--lg">
+            <img src="assets/avatars/partner.png" alt="" class="avatar-img" onerror="this.classList.add('avatar-fallback')" />
+            <span class="avatar-placeholder">Jeje</span>
+          </div>
+        </div>
+        <p class="signature">Cico × Jeje</p>
+      </div>
+    </section>
+
+  </main>
+
+  <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+  <script src="script.js"></script>
+</body>
+</html>
