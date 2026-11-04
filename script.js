@@ -7,10 +7,10 @@ const CONFIG = {
   partnerName: 'Jeje',
   cityA: 'Surabaya',
   cityB: 'Purworejo',
-  askQuestion: 'Jeje, mau jadi pacarku?',
+  askQuestion: 'Jeje, would you be mine?',
   celebrateTitle: 'Makasih, Jeje.',
   celebrateMessage:
-    'Aku bahagia banget. Dari map hutan, jokes yang nyambung, sampai tawa kamu di Discord — semuanya bikin aku makin yakin. Call malamnya… jangan berhenti, ya?',
+    'Aku bahagia banget. Dari jokes “ngeeengg” di hutan, streak TikTok, sampai tawa kamu di call Discord — semuanya bikin aku makin yakin. Malamnya… jangan berhenti, ya?',
   musicTitle: 'YouTube soundtrack',
   youtubeVideoId: 'ueABCC8eF6o',
   youtubeUrl: 'https://www.youtube.com/watch?v=ueABCC8eF6o',
@@ -18,14 +18,51 @@ const CONFIG = {
   noFleeMax: 5, // hilang total di percobaan ke-5
 };
 
+const SCENES = [
+  { name: 'gate', label: '' },
+  { name: 'intro', label: 'pembuka' },
+  { name: 'game', label: 'pemanasan' },
+  { name: 'story', label: 'bab 1 · awal kita' },
+  { name: 'map', label: 'bab 2 · jarak' },
+  { name: 'letter', label: 'bab 3 · surat' },
+  { name: 'promise', label: 'bab 4 · janji' },
+  { name: 'pause', label: '' },
+  { name: 'ask', label: 'the important part' },
+  { name: 'celebrate', label: 'hari kita' },
+];
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 document.addEventListener('DOMContentLoaded', () => {
+  initMobileViewport();
   applyConfig();
   initScenes();
   initGames();
+  initLetter();
   initAskButtons();
   initMusic();
   initConfetti();
+  initCelebrate();
 });
+
+function initMobileViewport() {
+  const root = document.documentElement;
+  const sync = () => {
+    const height = window.visualViewport?.height || window.innerHeight;
+    root.style.setProperty('--vvh', `${Math.round(height)}px`);
+  };
+  sync();
+  window.visualViewport?.addEventListener('resize', sync);
+  window.addEventListener('orientationchange', () => {
+    window.setTimeout(sync, 250);
+  });
+}
+
+function scrollPageToTop() {
+  const root = document.scrollingElement || document.documentElement;
+  root.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
 
 function applyConfig() {
   const setText = (id, text) => {
@@ -50,54 +87,199 @@ function initScenes() {
   });
 }
 
-function goToScene(name) {
-  document.querySelectorAll('.scene').forEach((scene) => {
-    const isTarget = scene.dataset.scene === name;
-    if (isTarget) {
-      scene.hidden = false;
-      void scene.offsetWidth;
-      scene.classList.add('scene-active');
-    } else {
-      scene.hidden = true;
-      scene.classList.remove('scene-active');
-    }
-  });
+let sceneSwitching = false;
+const SCENE_EXIT_MS = 450;
 
-  if (name === 'story') startStoryReveal();
-  if (name === 'map') playMapAnimation();
+function goToScene(name) {
+  const target = document.querySelector(`.scene[data-scene="${name}"]`);
+  const current = document.querySelector('.scene.scene-active');
+  if (!target || target === current || sceneSwitching) return;
+
+  sceneSwitching = true;
+  if (current) current.classList.add('scene-leaving');
+  if (current?.dataset.scene === 'game') stopCatchGame();
+
+  window.setTimeout(() => {
+    if (current) {
+      current.classList.remove('scene-active', 'scene-leaving');
+      current.hidden = true;
+    }
+    target.hidden = false;
+    void target.offsetWidth;
+    target.classList.add('scene-active');
+    scrollPageToTop();
+
+    updateJourney(name);
+    onEnterScene(name);
+    sceneSwitching = false;
+  }, current && !prefersReducedMotion ? SCENE_EXIT_MS : 0);
+}
+
+function onEnterScene(name) {
   if (name === 'game') startGames();
+  if (name === 'story') {
+    revealSequence('#story-stack .story-line', {
+      interval: 1150,
+      button: 'story-continue',
+    });
+  }
+  if (name === 'map') playMapAnimation();
+  if (name === 'letter') startLetter();
+  if (name === 'promise') {
+    revealSequence('#promise-list .promise-item', {
+      interval: 1300,
+      startDelay: 500,
+      button: 'promise-continue',
+    });
+  }
+  if (name === 'pause') startPause();
   if (name === 'ask') {
     requestAnimationFrame(() => {
       window.__prepareAskLayout?.();
     });
   }
-  if (name === 'celebrate') triggerConfetti();
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (name === 'celebrate') {
+    triggerConfetti();
+    window.setTimeout(triggerConfetti, 1600);
+  }
 }
 
-/* ---------- Story ---------- */
-let storyStarted = false;
+function updateJourney(name) {
+  const idx = SCENES.findIndex((s) => s.name === name);
+  const fill = document.getElementById('journey-fill');
+  const label = document.getElementById('chapter-label');
+  const pct = idx <= 0 ? 0 : (idx / (SCENES.length - 1)) * 100;
 
-function startStoryReveal() {
-  if (storyStarted) return;
-  storyStarted = true;
+  document.body.dataset.scene = name;
+  if (fill) fill.style.width = `${pct}%`;
+  if (label) label.textContent = SCENES[idx]?.label ?? '';
+}
 
-  const lines = document.querySelectorAll('.story-line');
-  const continueBtn = document.getElementById('story-continue');
-  let i = 0;
+/* ---------- Reveal helpers ---------- */
+const sequenceTimers = new Map();
 
-  const showNext = () => {
-    if (i >= lines.length) {
-      if (continueBtn) continueBtn.disabled = false;
+function revealSequence(selector, { interval = 1000, startDelay = 350, button } = {}) {
+  sequenceTimers.get(selector)?.forEach((id) => clearTimeout(id));
+  const timers = [];
+  sequenceTimers.set(selector, timers);
+
+  const items = [...document.querySelectorAll(selector)];
+  const btn = button ? document.getElementById(button) : null;
+  items.forEach((el) => el.classList.remove('is-visible'));
+  if (btn) btn.disabled = true;
+
+  const step = prefersReducedMotion ? 120 : interval;
+  items.forEach((el, i) => {
+    timers.push(setTimeout(() => el.classList.add('is-visible'), startDelay + i * step));
+  });
+  timers.push(
+    setTimeout(() => {
+      if (btn) btn.disabled = false;
+    }, startDelay + items.length * step)
+  );
+}
+
+/* ---------- Letter (typewriter) ---------- */
+let letterTimer = 0;
+let letterFinish = null;
+
+function initLetter() {
+  const card = document.getElementById('letter-card');
+  if (!card) return;
+  card.querySelectorAll('[data-type]').forEach((el) => {
+    el.dataset.full = el.textContent.trim();
+  });
+  card.addEventListener('click', () => letterFinish?.());
+}
+
+function startLetter() {
+  const card = document.getElementById('letter-card');
+  const btn = document.getElementById('letter-continue');
+  const skip = document.getElementById('letter-skip');
+  if (!card) return;
+
+  clearTimeout(letterTimer);
+  const parts = [...card.querySelectorAll('[data-type]')];
+  parts.forEach((el) => {
+    el.textContent = '';
+    el.classList.remove('is-typing', 'is-done');
+  });
+  if (btn) btn.disabled = true;
+  if (skip) skip.hidden = false;
+
+  const done = () => {
+    clearTimeout(letterTimer);
+    parts.forEach((el) => {
+      el.textContent = el.dataset.full;
+      el.classList.remove('is-typing');
+      el.classList.add('is-done');
+    });
+    if (btn) btn.disabled = false;
+    if (skip) skip.hidden = true;
+    letterFinish = null;
+  };
+  letterFinish = done;
+
+  if (prefersReducedMotion) {
+    done();
+    return;
+  }
+
+  let p = 0;
+  let c = 0;
+  const typeNext = () => {
+    const el = parts[p];
+    if (!el) {
+      done();
       return;
     }
-    lines[i].classList.add('is-visible');
-    i += 1;
-    setTimeout(showNext, 780);
+    const full = el.dataset.full;
+    el.classList.add('is-typing');
+    c += 1;
+    el.textContent = full.slice(0, c);
+
+    if (c < full.length) {
+      const ch = full[c - 1];
+      const pauseAfter = /[.,?!—…]/.test(ch) ? 340 : 0;
+      letterTimer = setTimeout(typeNext, 54 + pauseAfter);
+    } else {
+      el.classList.remove('is-typing');
+      el.classList.add('is-done');
+      p += 1;
+      c = 0;
+      letterTimer = setTimeout(typeNext, 950);
+    }
   };
 
-  setTimeout(showNext, 280);
+  letterTimer = setTimeout(typeNext, 900);
+}
+
+/* ---------- Pause before the question ---------- */
+function startPause() {
+  revealSequence('#scene-pause .pause-line', { interval: 1700, startDelay: 700 });
+  const cta = document.getElementById('pause-cta');
+  const lines = document.querySelectorAll('#scene-pause .pause-line').length;
+  if (!cta) return;
+  cta.classList.remove('is-visible');
+  const step = prefersReducedMotion ? 120 : 1700;
+  window.setTimeout(() => cta.classList.add('is-visible'), 700 + lines * step + 400);
+}
+
+/* ---------- Celebrate ---------- */
+function initCelebrate() {
+  const stamp = document.getElementById('date-stamp');
+  if (stamp) {
+    const today = new Date().toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+    stamp.textContent = `mulai hari ini · ${today}`;
+  }
+
+  document.getElementById('replay-btn')?.addEventListener('click', () => {
+    goToScene('intro');
+  });
 }
 
 /* ---------- Map ---------- */
@@ -233,9 +415,9 @@ function initAskButtons() {
   let isMoving = false;
   const MOVE_MS = 720;
   const taunts = [
-    'Nope? Hmm...',
+    'You sure…?',
     'Nice try~',
-    'Almost~',
+    'Aku sedih nih…',
     'Last chance?',
   ];
 
@@ -251,9 +433,21 @@ function initAskButtons() {
     const maxX = Math.max(0, pw - w);
     const maxY = Math.max(0, ph - h);
 
-    // Keep Nope in the upper/mid area initially — never bottom edge
-    const x = startCentered ? Math.min(maxX, Math.max(0, pw * 0.58 - w / 2)) : clamp(parseFloat(noBtn.style.left) || 0, 0, maxX);
-    const y = startCentered ? Math.min(maxY, Math.max(0, ph * 0.42 - h / 2)) : clamp(parseFloat(noBtn.style.top) || 0, 0, maxY);
+    let x = clamp(parseFloat(noBtn.style.left) || 0, 0, maxX);
+    let y = clamp(parseFloat(noBtn.style.top) || 0, 0, maxY);
+    if (startCentered) {
+      const playRect = playground.getBoundingClientRect();
+      const yesRect = yesBtn.getBoundingClientRect();
+      const yesRight = yesRect.right - playRect.left;
+      const yesBottom = yesRect.bottom - playRect.top;
+      if (pw >= 560 && pw - yesRight >= w + 24) {
+        x = Math.min(maxX, yesRight + (pw - yesRight - w) / 2);
+        y = clamp(yesRect.top - playRect.top + (yesRect.height - h) / 2, 0, maxY);
+      } else {
+        x = clamp(pw / 2 - w / 2, 0, maxX);
+        y = Math.min(maxY, yesBottom + 18);
+      }
+    }
 
     noBtn.style.position = 'absolute';
     noBtn.style.left = `${x}px`;
@@ -389,6 +583,8 @@ function initAskButtons() {
       noBtn.style.setProperty('--no-opacity', '0');
       noBtn.setAttribute('aria-hidden', 'true');
       noBtn.tabIndex = -1;
+      yesBtn.classList.add('is-spotlight');
+      playground.classList.add('is-yes-only');
     }
 
     window.setTimeout(() => {
@@ -398,11 +594,36 @@ function initAskButtons() {
 
   // Prepare absolute layout when ask scene opens
   const prepareAskLayout = () => {
+    fleeCount = 0;
+    isMoving = false;
+    noBtn.textContent = 'Nope';
+    noBtn.classList.remove('is-shrinking', 'is-fleeing', 'is-vanished');
+    noBtn.style.removeProperty('--no-scale');
+    noBtn.style.removeProperty('--no-opacity');
+    noBtn.style.pointerEvents = '';
+    noBtn.removeAttribute('aria-hidden');
+    noBtn.tabIndex = 0;
+    yesBtn.classList.remove('is-spotlight');
+    playground.classList.remove('is-yes-only');
+    noBtn.style.transition = 'none';
     placeNoInsidePlayground(true);
+    void noBtn.offsetWidth;
+    noBtn.style.transition = '';
   };
 
   // Expose for goToScene
   window.__prepareAskLayout = prepareAskLayout;
+
+  window.addEventListener('orientationchange', () => {
+    window.setTimeout(() => {
+      if (document.body.dataset.scene !== 'ask') return;
+      if (noBtn.classList.contains('is-vanished')) return;
+      noBtn.style.transition = 'none';
+      placeNoInsidePlayground(true);
+      void noBtn.offsetWidth;
+      noBtn.style.transition = '';
+    }, 280);
+  });
 
   // Desktop: hover flees. Mobile: touch/click only (no sticky hover).
   const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -596,17 +817,17 @@ const QUIZ = [
       { text: 'Tinder… hehe', correct: false },
     ],
     wrong: 'Hehe bukan itu~ ingat hutan yang random itu?',
-    right: 'Yess! Hutan itu awal semuanya ♡',
+    right: 'Yess! Hutan itu + jokes “ngeeengg” ♡',
   },
   {
-    q: 'Hal yang paling ditunggu tiap malam?',
+    q: 'Setelah chat Discord, kita jaga streak di mana?',
     options: [
-      { text: 'Notif spam random', correct: false },
-      { text: 'Call Discord bareng kamu', correct: true },
-      { text: 'Nonton Iklan YouTube', correct: false },
+      { text: 'WhatsApp status', correct: false },
+      { text: 'TikTok (API streak)', correct: true },
+      { text: 'Duolingo owl', correct: false },
     ],
-    wrong: 'Coba lagi… yang bikin malam terasa hangat~',
-    right: 'Betul. Suara kamu itu beneran ditunggu.',
+    wrong: 'Bukan~ yang bikin aku tiap hari mikirin kamu~',
+    right: 'Betul. Streak-nya lucu, tapi penting banget.',
   },
 ];
 
@@ -651,13 +872,16 @@ function initGames() {
     const v = Number(dial.value);
     if (dialNum) dialNum.textContent = String(v);
     if (v < 80) {
-      dialNote.textContent = 'Hmm… masih setengah-setengah nih~';
+      dialNote.textContent = 'Hmm… masih setengah-setengah. Kayak streak yang putus~';
       dialSubmit.disabled = true;
     } else if (v < 95) {
-      dialNote.textContent = 'Makin jujur… dikit lagi!';
+      dialNote.textContent = 'Makin jujur… dikit lagi, jangan malu~';
+      dialSubmit.disabled = true;
+    } else if (v < 100) {
+      dialNote.textContent = 'hayolo gabole nanggung';
       dialSubmit.disabled = true;
     } else {
-      dialNote.textContent = 'Oke, aku terima kejujuran ini ♡';
+      dialNote.textContent = 'Oke. Kejujuran ini aku terima ♡';
       dialSubmit.disabled = false;
     }
   };
@@ -666,7 +890,7 @@ function initGames() {
   syncDial();
 
   dialSubmit.addEventListener('click', () => {
-    setGameHeader('bonus cleared', 'Warm-up selesai', 'Siap ke pertanyaan penting?');
+    setGameHeader('pemanasan selesai', 'Oke, cukup mainnya', 'Sekarang cerita yang beneran.');
     showGamePanel('game-done');
   });
 
@@ -677,7 +901,7 @@ function startGames() {
   if (!gamesReady) initGames();
   stopCatchGame();
   catchScore = 0;
-  setGameHeader('mini game 1/3', 'Kuis kecil-kecilan', 'Jawaban salah juga oke — coba lagi aja.');
+  setGameHeader('pemanasan · 1/3', 'Kuis kecil-kecilan', 'Salah juga oke — coba lagi aja~');
   showGamePanel('game-quiz');
   renderQuiz(0);
 }
@@ -736,7 +960,7 @@ function renderQuiz(index) {
 }
 
 function startCatchGame() {
-  setGameHeader('mini game 2/3', 'Tangkap hatinya!', 'Tap 8 hati sebelum hilang~');
+  setGameHeader('pemanasan · 2/3', 'Tangkap hatinya!', 'Tap 8 hati sebelum hilang~');
   showGamePanel('game-catch');
 
   const arena = document.getElementById('catch-arena');
@@ -763,7 +987,8 @@ function startCatchGame() {
 
     const arenaW = arena.clientWidth || 280;
     const arenaH = arena.clientHeight || 220;
-    const x = 12 + Math.random() * Math.max(20, arenaW - 44);
+    const edge = window.matchMedia('(pointer: coarse)').matches ? 36 : 16;
+    const x = edge + Math.random() * Math.max(20, arenaW - edge * 2 - 28);
     heart.style.left = `${x}px`;
     heart.style.top = '0px';
     heart.style.transform = 'translate3d(0, -40px, 0) rotate(0deg)';
@@ -836,7 +1061,7 @@ function stopCatchGame() {
 
 function startDialGame() {
   stopCatchGame();
-  setGameHeader('mini game 3/3', 'Jujur-jujuran', 'Geser sampai hati kamu ikut ngaku.');
+  setGameHeader('pemanasan · 3/3', 'Jujur-jujuran', 'Geser sampai hati kamu ikut ngaku.');
   showGamePanel('game-dial');
   const dial = document.getElementById('love-dial');
   if (dial) {
@@ -860,8 +1085,9 @@ function initConfetti() {
 function resizeConfetti() {
   const canvas = document.getElementById('confetti-canvas');
   if (!canvas) return;
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const vv = window.visualViewport;
+  canvas.width = Math.round(vv?.width || window.innerWidth);
+  canvas.height = Math.round(vv?.height || window.innerHeight);
 }
 
 function triggerConfetti() {
@@ -869,7 +1095,8 @@ function triggerConfetti() {
   confettiParticles = [];
 
   const colors = ['#E87898', '#B83D62', '#FFD0DD', '#F5A3B8', '#FFE8EF', '#fff', '#FFC0CB'];
-  for (let i = 0; i < 140; i++) {
+  const count = window.innerWidth < 520 ? 72 : 140;
+  for (let i = 0; i < count; i++) {
     confettiParticles.push({
       x: Math.random() * window.innerWidth,
       y: -20 - Math.random() * 90,

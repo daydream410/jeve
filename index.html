@@ -2,8 +2,9 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Untuk Jeje, from Cico — dari map hutan Roblox sampai call Discord tiap malam." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="description" content="Untuk Jeje, from Cico — dari map hutan Roblox, chat Discord, streak TikTok, sampai call tiap malam." />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="theme-color" content="#FFE8EF" />
   <title>Untuk Jeje ♡</title>
@@ -41,8 +42,9 @@
   </script>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="font-sans text-ink bg-pearl antialiased overflow-x-hidden">
+<body class="font-sans text-ink bg-pearl antialiased overflow-x-hidden" data-scene="gate">
   <div class="bg-atmosphere" aria-hidden="true"></div>
+  <div class="hush-veil" aria-hidden="true"></div>
   <div class="floating-petals" aria-hidden="true"></div>
   <div class="icon-field" aria-hidden="true">
     <img class="float-icon float-icon--a" src="assets/images/icons8-cinnamoroll-50.png" alt="" />
@@ -68,8 +70,15 @@
     ></iframe>
   </div>
 
+  <div class="journey" aria-hidden="true">
+    <span class="journey-fill" id="journey-fill"></span>
+  </div>
+
   <header class="top-bar">
-    <p class="brand-mark" aria-label="Cico and Jeje">Cico <span aria-hidden="true">×</span> Jeje</p>
+    <div class="brand-block">
+      <p class="brand-mark" aria-label="Cico and Jeje">Cico <span aria-hidden="true">×</span> Jeje</p>
+      <p class="chapter-label" id="chapter-label" aria-live="polite"></p>
+    </div>
     <div class="music-dock">
       <button
         id="music-toggle"
@@ -100,51 +109,152 @@
 
   <main id="app" class="stage">
 
-    <!-- SCENE 1: Intro -->
-    <section id="scene-intro" class="scene scene-active" data-scene="intro">
+    <!-- 0 · Amplop pembuka -->
+    <section id="scene-gate" class="scene scene-active" data-scene="gate">
+      <div class="scene-inner">
+        <button type="button" class="envelope" style="--delay: 0.2s" data-next="intro" aria-label="Buka surat untuk Diajeng Galih Sekar S">
+          <span class="envelope-flap" aria-hidden="true"></span>
+          <span class="envelope-body" aria-hidden="true">
+            <span class="envelope-to">untuk</span>
+            <span class="envelope-name">Diajeng Galih Sekar <strong class="envelope-initial">S</strong></span>
+          </span>
+          <span class="envelope-seal" aria-hidden="true">♥</span>
+        </button>
+        <p class="lede gate-lede animate-in" style="--delay: 0.6s">
+          Ada yang udah lama aku nahan buat bilang ke kamu.<br />
+          Bukanya pas lagi sendiri, ya. Headset on kalau bisa~
+        </p>
+        <div class="cta-row animate-in" style="--delay: 0.95s">
+          <button type="button" class="btn-primary" data-next="intro">Buka suratnya</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1 · Intro -->
+    <section id="scene-intro" class="scene" data-scene="intro" hidden>
       <div class="scene-inner">
         <p class="eyebrow animate-in" style="--delay: 0.15s">Hei Jeje…</p>
-        <h1 class="headline animate-in" style="--delay: 0.4s">
+        <h1 class="headline animate-in" style="--delay: 0.45s">
           Aku mau<br />
-          <em>cerita dikit</em>
+          <em>curhat dikit</em>
         </h1>
-        <p class="lede animate-in" style="--delay: 0.7s">
-          Soal kita. Soal malam-malam yang pelan-pelan bikin aku sayang.
-          Baca sampai habis, ya?
+        <p class="lede animate-in" style="--delay: 0.8s">
+          Soal kita — dari jokes “ngeeengg” di hutan, sampai malam-malam yang bikin aku betah.
+          Bacanya pelan aja, ya. Aku nulis ini lama banget.
         </p>
-        <div class="cta-row animate-in" style="--delay: 1.05s">
-          <button type="button" class="btn-primary" data-next="story">
+        <div class="cta-row animate-in" style="--delay: 1.15s">
+          <button type="button" class="btn-primary" data-next="game">
             Oke, aku dengerin
           </button>
         </div>
       </div>
     </section>
 
-    <!-- SCENE 2: Story -->
+    <!-- 2 · Pemanasan (mini games) -->
+    <section id="scene-game" class="scene" data-scene="game" hidden>
+      <div class="scene-inner scene-inner--wide">
+        <p class="eyebrow" id="game-eyebrow">pemanasan dulu</p>
+        <h2 class="headline headline--md" id="game-title">Sebelum aku curhat…</h2>
+        <p class="lede lede--tight" id="game-lede">Main bentar dulu. Biar muka kamu senyum, baru aku serius~</p>
+
+        <div id="game-quiz" class="game-panel">
+          <div class="quiz-card">
+            <p class="quiz-progress" id="quiz-progress">1 / 2</p>
+            <p class="quiz-question" id="quiz-question">Kita kenal pertama kali di mana?</p>
+            <div class="quiz-options" id="quiz-options"></div>
+            <p class="quiz-feedback" id="quiz-feedback" hidden></p>
+          </div>
+        </div>
+
+        <div id="game-catch" class="game-panel" hidden>
+          <div class="catch-hud">
+            <p class="catch-score">♥ <span id="catch-count">0</span> / 8</p>
+            <p class="catch-hint">Tap hati yang jatuh!</p>
+          </div>
+          <div class="catch-arena" id="catch-arena" aria-label="Area tangkap hati"></div>
+        </div>
+
+        <div id="game-dial" class="game-panel" hidden>
+          <div class="dial-card">
+            <p class="dial-label">Geser: seberapa nyaman kamu sama Cico?</p>
+            <input
+              id="love-dial"
+              class="love-dial"
+              type="range"
+              min="0"
+              max="100"
+              value="70"
+              aria-label="Seberapa nyaman"
+            />
+            <p class="dial-value"><span id="dial-number">70</span>%</p>
+            <p class="dial-note" id="dial-note">Hmm… masih bisa lebih jujur~</p>
+            <button type="button" class="btn-primary" id="dial-submit" disabled>
+              Kunci jawaban
+            </button>
+          </div>
+        </div>
+
+        <div id="game-done" class="game-panel" hidden>
+          <div class="game-done-card">
+            <p class="game-done-emoji" aria-hidden="true">♡</p>
+            <p class="lede">
+              Oke, warm-up beres.<br />
+              Sekarang aku mau cerita dari awal — yang beneran.
+            </p>
+            <div class="cta-row">
+              <button type="button" class="btn-primary" data-next="story">
+                Ceritain
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · Cerita -->
     <section id="scene-story" class="scene" data-scene="story" hidden>
       <div class="scene-inner">
-        <p class="eyebrow">awal kisah kita</p>
-        <h2 class="headline headline--md">Dari map hutan,<br /><em>ke hatiku</em></h2>
-        <div class="story-stack" id="story-stack">
-          <p class="story-line">Kita kenal di Roblox, di map hutan yang random banget. Aku nggak nyangka dari situ bakal nemu kamu.</p>
-          <p class="story-line">Awalnya cuma ngobrol biasa… tapi jokes-mu nyambung terus. Aku jadi nyaman, kayak udah lama kenal.</p>
-          <p class="story-line">Kamu seru dan baik. Campuran yang bikin aku bingung sendiri — kenapa senyum-senyum sendiri tiap mikirin kamu.</p>
-          <p class="story-line">Tiap malam call Discord jadi hal yang paling kutunggu. Dengar kamu ngomong dan ketawa aja… udah cukup bikin aku jatuh hati.</p>
-          <p class="story-line story-line--accent">Pelan-pelan, aku sadar: ini bukan sekadar temen main. Ini kamu.</p>
-        </div>
+        <p class="eyebrow">bab satu · awal kita</p>
+        <h2 class="headline headline--md">Dari hutan Roblox,<br /><em>ke tiap malam</em></h2>
+        <ol class="story-stack" id="story-stack">
+          <li class="story-line">
+            <span class="story-tag">awalnya</span>
+            Kita kenal di Roblox, di map hutan yang random banget. Dari situ muncul jokes “ngeeengg” yang aku masih ingat sampai sekarang.
+          </li>
+          <li class="story-line">
+            <span class="story-tag">main bareng</span>
+            Terus kita main game Roblox lain juga. Bukan cuma hutan itu — bareng kamu, map apa aja jadi seru.
+          </li>
+          <li class="story-line">
+            <span class="story-tag">pindah chat</span>
+            Obrolan kita lanjut ke Discord. Awalnya cuma text… tapi aku udah ngerasa nyaman banget.
+          </li>
+          <li class="story-line">
+            <span class="story-tag">lalu streak</span>
+            Kita lanjut ke TikTok, bikin API streak. Lucu sih — tapi streak itu bikin aku tiap hari mikirin kamu.
+          </li>
+          <li class="story-line">
+            <span class="story-tag">tiap malam</span>
+            Lalu call Discord. Dan jujur: malam yang paling berkesan… ya tiap malam. Karena bisa ngobrol sama kamu.
+          </li>
+          <li class="story-line story-line--accent">
+            <span class="story-tag">dan akhirnya</span>
+            Aku sadar. Ini bukan sekadar temen main, temen chat, atau temen streak. Ini kamu.
+          </li>
+        </ol>
         <div class="cta-row">
           <button type="button" class="btn-primary" data-next="map" disabled id="story-continue">
-            Lanjut yuk
+            Lanjut
           </button>
         </div>
       </div>
     </section>
 
-    <!-- SCENE 3: Distance Map -->
+    <!-- 4 · Jarak -->
     <section id="scene-map" class="scene" data-scene="map" hidden>
       <div class="scene-inner scene-inner--wide">
-        <p class="eyebrow">meski beda kota</p>
-        <h2 class="headline headline--md">Jauh di peta,<br /><em>deket di hati</em></h2>
+        <p class="eyebrow">bab dua · meski beda kota</p>
+        <h2 class="headline headline--md">Jauh di peta,<br /><em>deket tiap malam</em></h2>
         <p class="city-pair">
           <span id="city-a-label">Surabaya</span>
           <span class="city-heart" aria-hidden="true">♡</span>
@@ -263,103 +373,101 @@
           </div>
         </div>
 
-        <p class="caption">Kota kita beda, tapi tiap malam suaramu tetap nyampe ke aku.</p>
+        <p class="caption">
+          Kurang lebih 300 km. Tapi chat, streak, sama call malam tetap nyampe —
+          dan itu selalu cukup bikin aku kangen.
+        </p>
         <div class="cta-row">
-          <button type="button" class="btn-primary" data-next="game">
-            Main game dulu yuk~
+          <button type="button" class="btn-primary" data-next="letter">
+            Ada yang mau aku bilang…
           </button>
         </div>
       </div>
     </section>
 
-    <!-- SCENE: Mini games -->
-    <section id="scene-game" class="scene" data-scene="game" hidden>
-      <div class="scene-inner scene-inner--wide">
-        <p class="eyebrow" id="game-eyebrow">mini games</p>
-        <h2 class="headline headline--md" id="game-title">Sebelum yang serius…</h2>
-        <p class="lede lede--tight" id="game-lede">Warm-up dulu biar jantungnya siap.</p>
-
-        <!-- Game 1: Quiz -->
-        <div id="game-quiz" class="game-panel">
-          <div class="quiz-card">
-            <p class="quiz-progress" id="quiz-progress">1 / 2</p>
-            <p class="quiz-question" id="quiz-question">Kita kenal pertama kali di mana?</p>
-            <div class="quiz-options" id="quiz-options"></div>
-            <p class="quiz-feedback" id="quiz-feedback" hidden></p>
-          </div>
-        </div>
-
-        <!-- Game 2: Catch hearts -->
-        <div id="game-catch" class="game-panel" hidden>
-          <div class="catch-hud">
-            <p class="catch-score">♥ <span id="catch-count">0</span> / 8</p>
-            <p class="catch-hint">Tap hati yang jatuh!</p>
-          </div>
-          <div class="catch-arena" id="catch-arena" aria-label="Area tangkap hati"></div>
-        </div>
-
-        <!-- Game 3: Love dial -->
-        <div id="game-dial" class="game-panel" hidden>
-          <div class="dial-card">
-            <p class="dial-label">Geser seberapa nyaman kamu sama aku</p>
-            <input
-              id="love-dial"
-              class="love-dial"
-              type="range"
-              min="0"
-              max="100"
-              value="70"
-              aria-label="Seberapa nyaman"
-            />
-            <p class="dial-value"><span id="dial-number">70</span>%</p>
-            <p class="dial-note" id="dial-note">Hmm… masih bisa lebih jujur~</p>
-            <button type="button" class="btn-primary" id="dial-submit" disabled>
-              Kunci jawaban
-            </button>
-          </div>
-        </div>
-
-        <!-- Bridge to ask -->
-        <div id="game-done" class="game-panel" hidden>
-          <div class="game-done-card">
-            <p class="game-done-emoji" aria-hidden="true">♡</p>
-            <p class="lede">Oke, warm-up selesai. Sekarang yang beneran…</p>
-            <div class="cta-row">
-              <button type="button" class="btn-primary" data-next="ask">
-                Aku siap
-              </button>
-            </div>
-          </div>
+    <!-- 5 · Surat -->
+    <section id="scene-letter" class="scene" data-scene="letter" hidden>
+      <div class="scene-inner">
+        <p class="eyebrow">bab tiga · yang belum sempat aku bilang</p>
+        <article class="letter-card" id="letter-card" title="Tap untuk tampilkan semua">
+          <p class="letter-greeting" data-type>HAAAAIIIIIII Jeje,</p>
+          <p class="letter-para" data-type>Makasih sudah mau nemenin main, chat, call tiap hari. Dari awal mungkin kamu cuman anggep “aku orang baik” — tapi buat aku, itu hari-hari yang bikin aku semangat dan tersenyum lagi.</p>
+          <p class="letter-para" data-type>Dari awal kenal, hati dan pikiranku langsung sinkron: “oh ini orang yang bisa aku percaya 100%”. Dari situ aku mulai mencoba semakin dekat sama kamu.</p>
+          <p class="letter-para" data-type>Perjalanannya PANJANG DAN LAMA BETOLLL, karena zuzurly aja nih… kamu susah banget buat dideketin. TAPI JUSTRU HAL ITU YANG BIKIN AKU SEMAKIN MANTEPIN HATI KALAU KAMU MEMANG BISA AKU PERCAYA 10000000%!!!! Jadinya aku gaspol deh.</p>
+          <p class="letter-para" data-type>Tiba-tiba… DUAR aku confess how I feel about you, and BOOM kamu ternyata merasakan yang sama — cuman “sedikit” denial, makanya masih jaga jarak. xixixixi</p>
+          <p class="letter-para" data-type>Aku tau jarak kita jauh, LDR juga sangat berat. Tapi kalau sama orang yang tepat, harusnya mudah kan? (btw nggak sejauh itu ya — naik kereta cuma 6 jam doang)</p>
+          <p class="letter-sign" data-type>— Cico</p>
+        </article>
+        <p class="letter-skip" id="letter-skip">tap suratnya kalau mau langsung baca semua</p>
+        <div class="cta-row">
+          <button type="button" class="btn-primary" data-next="promise" id="letter-continue" disabled>
+            Terus…?
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- SCENE: Ask -->
+    <!-- 6 · Janji -->
+    <section id="scene-promise" class="scene" data-scene="promise" hidden>
+      <div class="scene-inner">
+        <p class="eyebrow">bab empat · janji kecil</p>
+        <h2 class="headline headline--md">Yang bisa aku<br /><em>janjiin ke kamu</em></h2>
+        <ul class="promise-list" id="promise-list">
+          <li class="promise-item"><span class="promise-mark" aria-hidden="true">♡</span><span>Aku akan selalu bully kamu. Maaf sebelumnya.</span></li>
+          <li class="promise-item"><span class="promise-mark" aria-hidden="true">♡</span><span>Streak sama call malam kita, aku jaga. Nggak mau jadi rutinitas yang hambar.</span></li>
+          <li class="promise-item"><span class="promise-mark" aria-hidden="true">♡</span><span>Jarak Surabaya–Purworejo nggak akan jadi alasan aku berhenti usaha.</span></li>
+          <li class="promise-item promise-item--accent"><span class="promise-mark" aria-hidden="true">♥</span><span>Dan suatu hari nanti, kita ketemu. Bukan cuma lewat layar.</span></li>
+        </ul>
+        <div class="cta-row">
+          <button type="button" class="btn-primary" data-next="pause" id="promise-continue" disabled>
+            Ada satu lagi…
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · Tarik napas -->
+    <section id="scene-pause" class="scene" data-scene="pause" hidden>
+      <div class="scene-inner">
+        <div class="pause-heart" aria-hidden="true">♥</div>
+        <div class="pause-lines">
+          <p class="pause-line">Oke…</p>
+          <p class="pause-line">Jujur, deg-degan banget — lebih dari mau sidang skripsi.</p>
+          <p class="pause-line">Tapi aku lebih takut nyesel kalau nggak pernah nanya.</p>
+          <p class="pause-line pause-line--strong">So…</p>
+        </div>
+        <div class="cta-row pause-cta" id="pause-cta">
+          <button type="button" class="btn-primary" data-next="ask">Ask me</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 · Pertanyaan -->
     <section id="scene-ask" class="scene" data-scene="ask" hidden>
       <div class="scene-inner">
-        <p class="eyebrow">yang paling penting</p>
+        <p class="eyebrow">the important part</p>
         <h2 id="ask-question" class="headline headline--ask">
-          Jeje, mau jadi pacarku?
+          Jeje, would you be mine?
         </h2>
         <p class="lede lede--tight">
-          Dari hutan Roblox sampai call Discord tiap malam…
-          sekarang aku mau yang lebih dari itu. (Tombol <strong>Nope</strong>-nya nakal dikit, hehe.)
+          From a random Roblox forest, to Discord chats, TikTok streaks, and every late-night call…
+          I want more than that. I want you.
         </p>
         <div class="ask-playground" id="ask-playground">
-          <button type="button" id="btn-yes" class="btn-yes">Mau! ♡</button>
+          <button type="button" id="btn-yes" class="btn-yes">Yes ♡</button>
           <button type="button" id="btn-no" class="btn-no">Nope</button>
         </div>
       </div>
     </section>
 
-    <!-- SCENE 5: Celebrate -->
+    <!-- 9 · Perayaan -->
     <section id="scene-celebrate" class="scene" data-scene="celebrate" hidden>
       <div class="scene-inner">
         <p class="eyebrow eyebrow--celebrate">yeayyyy</p>
         <h2 id="celebrate-title" class="headline">Makasih, Jeje.</h2>
         <p id="celebrate-message" class="lede">
-          Aku bahagia banget. Dari map hutan, jokes yang nyambung, sampai tawa kamu di Discord —
-          semuanya bikin aku makin yakin. Call malamnya… jangan berhenti, ya?
+          Aku bahagia banget. Dari jokes “ngeeengg” di hutan, streak TikTok, sampai tawa kamu di call Discord —
+          semuanya bikin aku makin yakin. Malamnya… jangan berhenti, ya?
         </p>
         <div class="couple-row">
           <div class="avatar-frame avatar-frame--lg">
@@ -372,7 +480,12 @@
             <span class="avatar-placeholder">Jeje</span>
           </div>
         </div>
+        <p class="date-stamp" id="date-stamp">mulai hari ini</p>
         <p class="signature">Cico × Jeje</p>
+        <p class="ps-note">
+          P.S. Screenshot halaman ini, ya. Biar suatu hari kita bisa lihat lagi — pas udah nggak jauh.
+        </p>
+        <button type="button" class="btn-ghost" id="replay-btn">Baca lagi dari awal</button>
       </div>
     </section>
 
