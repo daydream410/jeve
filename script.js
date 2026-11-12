@@ -13,7 +13,7 @@ const CONFIG = {
     'Aku bahagia banget. Dari jokes “ngeeengg” di hutan, streak TikTok, sampai tawa kamu di call Discord — semuanya bikin aku makin yakin. Malamnya… jangan berhenti, ya?',
   giftTease: 'Aku udah kirim sesuatu buat kamu. Tap kotaknya dulu, ya~',
   giftMessage:
-    'Hadiahnya lagi (atau udah) menuju ke kamu. Nanti kalau udah nyampe, buka pelan-pelan ya — mikirin aku juga oke~',
+    'Hadiah yang sudah sampai boleh kamu buka sekaraaanggggg!!! Yeeaaaaaayyyyy~',
   musicTitle: 'YouTube soundtrack',
   youtubeVideoId: 'ueABCC8eF6o',
   youtubeUrl: 'https://www.youtube.com/watch?v=ueABCC8eF6o',
