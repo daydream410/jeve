@@ -1895,6 +1895,11 @@ body[data-scene='pause'] .chapter-label {
   color: var(--ink-soft);
 }
 
+.gift-ps-note {
+  margin: 1rem auto 0;
+  max-width: none;
+}
+
 .gift-cta {
   margin-top: 0.4rem;
   animation: fadeUp 0.65s var(--ease-out) 0.25s both;
