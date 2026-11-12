@@ -42,7 +42,7 @@
   </script>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="font-sans text-ink bg-pearl antialiased overflow-x-hidden" data-scene="gate">
+<body class="font-sans text-ink bg-pearl antialiased" data-scene="gate">
   <div class="bg-atmosphere" aria-hidden="true"></div>
   <div class="hush-veil" aria-hidden="true"></div>
   <div class="floating-petals" aria-hidden="true"></div>
@@ -413,9 +413,9 @@
         <p class="eyebrow">bab empat · janji kecil</p>
         <h2 class="headline headline--md">Yang bisa aku<br /><em>janjiin ke kamu</em></h2>
         <ul class="promise-list" id="promise-list">
-          <li class="promise-item"><span class="promise-mark" aria-hidden="true">♡</span><span>Aku akan selalu bully kamu. Maaf sebelumnya.</span></li>
-          <li class="promise-item"><span class="promise-mark" aria-hidden="true">♡</span><span>Streak sama call malam kita, aku jaga. Nggak mau jadi rutinitas yang hambar.</span></li>
-          <li class="promise-item"><span class="promise-mark" aria-hidden="true">♡</span><span>Jarak Surabaya–Purworejo nggak akan jadi alasan aku berhenti usaha.</span></li>
+          <li class="promise-item"><span class="promise-mark" aria-hidden="true">♡</span><span>Monmaap nihhh sebelumnyaa, soalnya aku akan bully km tiaaaappp hariii wkwkwk (tahan-tahan yaa!!)</span></li>
+          <li class="promise-item"><span class="promise-mark" aria-hidden="true">♡</span><span>Aku bisa jadi bestie, pacar, teman, orang tua buat kamu, all in one pokoknya deechhhhhh</span></li>
+          <li class="promise-item"><span class="promise-mark" aria-hidden="true">♡</span><span>Surabaya–Purworejo gak akan jadi alasan aku berhenti usahaaa</span></li>
           <li class="promise-item promise-item--accent"><span class="promise-mark" aria-hidden="true">♥</span><span>Dan suatu hari nanti, kita ketemu. Bukan cuma lewat layar.</span></li>
         </ul>
         <div class="cta-row">
@@ -485,7 +485,63 @@
         <p class="ps-note">
           P.S. Screenshot halaman ini, ya. Biar suatu hari kita bisa lihat lagi — pas udah nggak jauh.
         </p>
+        <div class="cta-row">
+          <button type="button" class="btn-primary" data-next="gift">
+            Buka hadiahnya ♡
+          </button>
+        </div>
         <button type="button" class="btn-ghost" id="replay-btn">Baca lagi dari awal</button>
+      </div>
+    </section>
+
+    <!-- 10 · Hadiah -->
+    <section id="scene-gift" class="scene" data-scene="gift" hidden>
+      <div class="scene-inner">
+        <p class="eyebrow">satu kejutan lagi</p>
+        <h2 class="headline headline--md" id="gift-title">Ada hadiah<br /><em>buat kamu</em></h2>
+        <p class="lede lede--tight" id="gift-tease">
+          Aku udah kirim sesuatu buat kamu. Tap kotaknya dulu, ya~
+        </p>
+
+        <button
+          type="button"
+          class="gift-box"
+          id="gift-box"
+          aria-label="Buka hadiah"
+          aria-expanded="false"
+        >
+          <span class="gift-bow" aria-hidden="true">
+            <span class="gift-bow-knot"></span>
+            <span class="gift-bow-loop gift-bow-loop--l"></span>
+            <span class="gift-bow-loop gift-bow-loop--r"></span>
+          </span>
+          <span class="gift-lid" aria-hidden="true">
+            <span class="gift-lid-ribbon"></span>
+          </span>
+          <span class="gift-body" aria-hidden="true">
+            <span class="gift-body-ribbon"></span>
+            <span class="gift-spark gift-spark--1">✦</span>
+            <span class="gift-spark gift-spark--2">♡</span>
+            <span class="gift-spark gift-spark--3">✦</span>
+          </span>
+          <span class="gift-hint" id="gift-hint">tap buat buka</span>
+        </button>
+
+        <div class="gift-reveal" id="gift-reveal" hidden>
+          <p class="gift-reveal-emoji" aria-hidden="true">♥</p>
+          <p class="gift-reveal-title">Tadaaa~</p>
+          <p class="lede" id="gift-message">
+            Hadiahnya lagi (atau udah) menuju ke kamu.
+            Nanti kalau udah nyampe, buka pelan-pelan ya — mikirin aku juga oke~
+          </p>
+          <p class="gift-reveal-note">
+            Dari Cico, dengan hati yang deg-degan.
+          </p>
+        </div>
+
+        <div class="cta-row gift-cta" id="gift-cta" hidden>
+          <button type="button" class="btn-ghost" id="gift-replay-btn">Baca lagi dari awal</button>
+        </div>
       </div>
     </section>
 

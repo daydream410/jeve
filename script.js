@@ -11,6 +11,9 @@ const CONFIG = {
   celebrateTitle: 'Makasih, Jeje.',
   celebrateMessage:
     'Aku bahagia banget. Dari jokes “ngeeengg” di hutan, streak TikTok, sampai tawa kamu di call Discord — semuanya bikin aku makin yakin. Malamnya… jangan berhenti, ya?',
+  giftTease: 'Aku udah kirim sesuatu buat kamu. Tap kotaknya dulu, ya~',
+  giftMessage:
+    'Hadiahnya lagi (atau udah) menuju ke kamu. Nanti kalau udah nyampe, buka pelan-pelan ya — mikirin aku juga oke~',
   musicTitle: 'YouTube soundtrack',
   youtubeVideoId: 'ueABCC8eF6o',
   youtubeUrl: 'https://www.youtube.com/watch?v=ueABCC8eF6o',
@@ -29,6 +32,7 @@ const SCENES = [
   { name: 'pause', label: '' },
   { name: 'ask', label: 'the important part' },
   { name: 'celebrate', label: 'hari kita' },
+  { name: 'gift', label: 'hadiah buatmu' },
 ];
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -43,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMusic();
   initConfetti();
   initCelebrate();
+  initGift();
 });
 
 function initMobileViewport() {
@@ -60,8 +65,13 @@ function initMobileViewport() {
 
 function scrollPageToTop() {
   const root = document.scrollingElement || document.documentElement;
+  const html = document.documentElement;
+  const prev = html.style.scrollBehavior;
+  html.style.scrollBehavior = 'auto';
   root.scrollTop = 0;
   document.body.scrollTop = 0;
+  window.scrollTo(0, 0);
+  html.style.scrollBehavior = prev;
 }
 
 function applyConfig() {
@@ -77,6 +87,8 @@ function applyConfig() {
   setText('ask-question', CONFIG.askQuestion);
   setText('celebrate-title', CONFIG.celebrateTitle);
   setText('celebrate-message', CONFIG.celebrateMessage);
+  setText('gift-tease', CONFIG.giftTease);
+  setText('gift-message', CONFIG.giftMessage);
 }
 
 function initScenes() {
@@ -142,6 +154,7 @@ function onEnterScene(name) {
     triggerConfetti();
     window.setTimeout(triggerConfetti, 1600);
   }
+  if (name === 'gift') resetGift();
 }
 
 function updateJourney(name) {
@@ -280,6 +293,59 @@ function initCelebrate() {
   document.getElementById('replay-btn')?.addEventListener('click', () => {
     goToScene('intro');
   });
+}
+
+/* ---------- Gift ---------- */
+function initGift() {
+  const box = document.getElementById('gift-box');
+  const replay = document.getElementById('gift-replay-btn');
+  if (!box) return;
+
+  box.addEventListener('click', () => {
+    if (box.classList.contains('is-open')) return;
+    openGift();
+  });
+
+  replay?.addEventListener('click', () => {
+    goToScene('intro');
+  });
+}
+
+function resetGift() {
+  const box = document.getElementById('gift-box');
+  const reveal = document.getElementById('gift-reveal');
+  const cta = document.getElementById('gift-cta');
+  const tease = document.getElementById('gift-tease');
+  const hint = document.getElementById('gift-hint');
+
+  box?.classList.remove('is-open', 'is-shake');
+  box?.setAttribute('aria-expanded', 'false');
+  if (reveal) reveal.hidden = true;
+  if (cta) cta.hidden = true;
+  if (tease) tease.hidden = false;
+  if (hint) hint.hidden = false;
+}
+
+function openGift() {
+  const box = document.getElementById('gift-box');
+  const reveal = document.getElementById('gift-reveal');
+  const cta = document.getElementById('gift-cta');
+  const tease = document.getElementById('gift-tease');
+  const hint = document.getElementById('gift-hint');
+  if (!box) return;
+
+  box.classList.add('is-shake');
+  window.setTimeout(() => {
+    box.classList.remove('is-shake');
+    box.classList.add('is-open');
+    box.setAttribute('aria-expanded', 'true');
+    if (hint) hint.hidden = true;
+    if (tease) tease.hidden = true;
+    if (reveal) reveal.hidden = false;
+    if (cta) cta.hidden = false;
+    triggerConfetti();
+    window.setTimeout(triggerConfetti, 900);
+  }, prefersReducedMotion ? 0 : 480);
 }
 
 /* ---------- Map ---------- */
